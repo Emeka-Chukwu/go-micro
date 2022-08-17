@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const dbTimeout = time.Second * 3
+const dbTimeout = time.Second * 5
 
 var db *sql.DB
 
@@ -91,7 +91,8 @@ func (u *User) GetByEmail(email string) (*User, error) {
 
 	var user User
 	row := db.QueryRowContext(ctx, query, email)
-
+	log.Println(row)
+	log.Println(query)
 	err := row.Scan(
 		&user.ID,
 		&user.Email,
