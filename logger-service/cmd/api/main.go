@@ -32,28 +32,47 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-/// create a context to disconnect
+	client = mongoClient
+	/// create a context to disconnect
 
-ctx, cancel := context.WithTimeout(context.Background(),15*time.Second)
-defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 
-// close connection
+	// close connection
 
-defer func(){
-	if err = client.Disconnect(); err != nil{
-		panic(err)
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			panic(err)
+		}
+	}()
+
+	app := Config{
+		Models: data.New(client),
 	}
-}()
+	// start web server
 
-app := Config{
-	Models: data.New(client),
+	log.Println("Starting service on port", webport)
+	app.serve()
+	// srv := &http.Server{
+	// 	Addr:    fmt.Sprintf(":%s", webport),
+	// 	Handler: app.routes(),
+	// }
+
+	// err = srv.ListenAndServe()
+	// if err != nil {
+	// 	log.Panic()
+	// }
 }
-}
 
-
-func (app *Config) serve(){
+func (app *Config) serve() {
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%s", webport),
+		Addr:    fmt.Sprintf(":%s", webport),
+		Handler: app.routes(),
+	}
+
+	err := srv.ListenAndServe()
+	if err != nil {
+		log.Panic()
 	}
 }
 
@@ -66,9 +85,11 @@ func connectMongo() (*mongo.Client, error) {
 	})
 
 	// connect
-	c, err : mongo.Connect(context.TODO(), clientOptions)
-	if err!= nil{
-		return nil,err
+	c, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		log.Println("Error connecting:", err)
+		return nil, err
 	}
-	return c,nil
+	log.Println("Connected to mongo")
+	return c, nil
 }
