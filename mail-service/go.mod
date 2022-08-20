@@ -12,5 +12,6 @@ require (
 	github.com/vanng822/css v1.0.1 // indirect
 	github.com/vanng822/go-premailer v1.20.1 // indirect
 	github.com/xhit/go-simple-mail/v2 v2.11.0 // indirect
-	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
+	github.com/yosssi/gohtml v0.0.0-20201013000340-ee4748c638f4 // indirect
+	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
 )
