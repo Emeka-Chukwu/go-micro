@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"html/template"
+	"os"
 
 	"log"
 	"time"
@@ -44,14 +45,19 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 		"message": msg.Data,
 	}
 
-	msg.DataMap = data
+	_, err := os.Open("./mail-service/cmd/web/stat.json")
+	if err != nil {
+		log.Println(err, "lll")
+		return err
+	}
 
-	formattedMessage, err := m.buildHTMLMessage(msg)
+	msg.DataMap = data
+	plainMessage, err := m.buildPlainTextMessage(msg)
 	if err != nil {
 		return err
 	}
 
-	plainMessage, err := m.buildPlainTextMessage(msg)
+	formattedMessage, err := m.buildHTMLMessage(msg)
 	if err != nil {
 		return err
 	}
@@ -90,10 +96,15 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 }
 
 func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
-	templateToRender := "./front-end/cmd/web/templates/base.layout.gohtml"
+	templateToRender := "./templates/mail.html.gohtml"
+	path, _ := os.Getwd()
+	log.Println(path)
+	tmp := "/Users/chukwuemekapascal/go/src/go-micro/mail-service/templates/mail.html.gohtml"
+	log.Println(path)
+	log.Println(tmp)
 
 	// ./templates/mail.html.gohtml
-	t, err := template.New("html").ParseFiles(templateToRender)
+	t, err := template.New("email-html").ParseFiles(templateToRender)
 	if err != nil {
 		log.Println(err, "seen")
 		return "", err
@@ -120,9 +131,11 @@ func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
 
 func (m *Mail) buildPlainTextMessage(msg Message) (string, error) {
 	// tmpl, err := template.ParseFiles(templateSlice...)
-	// templateToRender := "./templates/mail.plain.gohtml"
-	var templateSlice = []string{"./mail.hmtl"}
-	t, err := template.New("email-plain").ParseFiles(templateSlice...)
+	value, _ := os.Getwd()
+	log.Println(value)
+	templateToRender := "./templates/mail.plain.gohtml"
+
+	t, err := template.New("email-plain").ParseFiles(templateToRender)
 	if err != nil {
 		return "", err
 	}
