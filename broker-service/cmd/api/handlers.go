@@ -150,8 +150,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 
 }
 
-<<<<<<< HEAD
-func (app *Config) logEventViaRabbit(w http.Response, l LogPayload) {
+func (app *Config) logEventViaRabbit(w http.ResponseWriter, l LogPayload) {
 	err := app.pushToQueue(l.Name, l.Data)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -172,13 +171,14 @@ func (app *Config) pushToQueue(name, msg string) error {
 		Data: msg,
 	}
 
-	j, _ = json.MarshalIndent(&payload, "", "\t")
+	j, _ := json.MarshalIndent(&payload, "", "\t")
 	err = emitter.Push(string(j), "log.INFO")
 	if err != nil {
 		return err
 	}
 	return nil
-=======
+
+}
 func (app *Config) sendMail(w http.ResponseWriter, msg MailPayload) {
 
 	jsonData, _ := json.MarshalIndent(msg, "", "\t")
@@ -216,5 +216,4 @@ func (app *Config) sendMail(w http.ResponseWriter, msg MailPayload) {
 	payload.Message = "Message sent to " + msg.To
 	app.writeJSON(w, http.StatusAccepted, payload)
 
->>>>>>> 088947ab8f21cfd5a5fdecf93c3c9f071cccdde8
 }

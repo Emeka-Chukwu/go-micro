@@ -45,6 +45,7 @@ type Payload struct {
 
 func (consumer *Consumer) Listen(topics []string) error {
 	ch, err := consumer.conn.Channel()
+	fmt.Println("hhhe  ebbehhehhe e bebeb ")
 	if err != nil {
 		return err
 	}

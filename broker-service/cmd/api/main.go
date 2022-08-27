@@ -31,9 +31,7 @@ func main() {
 	// start listener for messages
 	fmt.Println("Listening for and consuming rabbitmq messages...")
 
-	app := Config{Rabbit: rabbitConn
-
-	}
+	app := Config{Rabbit: rabbitConn}
 	log.Printf("Starting broker service on port %s\n", webPort)
 
 	srv := &http.Server{
